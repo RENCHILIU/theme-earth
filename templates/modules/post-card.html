@@ -16,7 +16,7 @@
         th:classappend="${animation} ? 'group-hover:scale-105'"
       />
     </a>
-    <div th:if="${post.spec.pinned}" class="absolute !top-1.5 !left-2" title="置顶">
+    <div th:if="${post.spec.pinned}" class="absolute !top-1.5 !left-2" title="Top🔝">
       <div class="i-bx-arrow-to-top !h-5 !w-5 text-sky-600"></div>
     </div>
   </div>
@@ -71,7 +71,7 @@
       ></span>
       <span
         class="text-sm tabular-nums text-gray-600 dark:text-slate-300"
-        th:text="${'发布于 '+#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
+        th:text="${'Posted '+#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
       >
       </span>
     </div>
