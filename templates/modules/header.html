@@ -86,7 +86,7 @@
                 x-transition:leave-start="transform opacity-100 scale-100"
                 x-transition:leave-end="transform opacity-0 scale-95"
                 class="absolute right-0 z-10 mt-2 w-40 divide-y divide-gray-50 overflow-hidden rounded bg-white shadow dark:divide-slate-600 dark:bg-slate-700"
-                x-data="{ colorSchemes: [{ label: '暗色', value: 'dark' }, { label: '亮色', value: 'light' }, { label: '跟随系统', value: 'system' }] }"
+                x-data="{ colorSchemes: [{ label: 'dark', value: 'dark' }, { label: 'light', value: 'light' }, { label: 'follow system', value: 'system' }] }"
               >
                 <template x-for="colorScheme in colorSchemes" :key="colorScheme.value">
                   <li class="flex w-full items-center text-left text-sm hover:bg-gray-50 dark:hover:bg-slate-600">
@@ -121,8 +121,8 @@
                 <div class="h-5 w-5 text-gray-600 hover:text-blue-600 dark:text-slate-100">
                   <img
                     class="h-5 w-5 rounded-full"
-                    th:src="${currentUser.avatar ?: #theme.assets('/images/default-avatar.svg')}"
-                    th:alt="${currentUser.displayName}"
+                    th:src="${currentUser ? (currentUser.avatar ?: #theme.assets('/images/default-avatar.svg')) : #theme.assets('/images/default-avatar.svg')}"
+                    th:alt="${currentUser ? currentUser.displayName : 'guest'}"
                   />
                 </div>
                 <ul
