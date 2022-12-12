@@ -121,8 +121,8 @@
                 <div class="h-5 w-5 text-gray-600 hover:text-blue-600 dark:text-slate-100">
                   <img
                     class="h-5 w-5 rounded-full"
-                    th:src="${currentUser ? (currentUser.avatar ?: #theme.assets('/images/default-avatar.svg')) : #theme.assets('/images/default-avatar.svg')}"
-                    th:alt="${currentUser ? currentUser.displayName : 'guest'}"
+                    th:src="${#theme.assets('/images/default-avatar.svg')}"
+                    th:alt="${' '}"
                   />
                 </div>
                 <ul
