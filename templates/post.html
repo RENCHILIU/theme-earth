@@ -43,7 +43,7 @@
               th:text="${post.owner.displayName}"
             ></span>
             <div class="flex items-center gap-2 text-xs font-light text-gray-600 dark:text-slate-100">
-              <span th:text="${'发布于 '+#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"></span>
+              <span th:text="${'posted on'+#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"></span>
               <span class="text-gray-300 dark:text-slate-200">/</span>
               <span th:text="${post.stats.visit}+' Read'"></span>
               <span class="text-gray-300 dark:text-slate-200">/</span>
