@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{modules/layout :: html(title = ${post.spec.title} + ' - ' + ${site.title}, hero = ~{::hero}, content = ~{::content}, head = null, footer = ~{::footer}, sidebar = ~{::sidebar}, contentClass = ${theme.config.layout.content_header} and ${not #strings.isEmpty(post.spec.cover)} ? '!-mt-20' : '')}"
+  th:replace="~{modules/layout :: html(title = ${post.spec.title} + ' - ' + ${site.title}, header = ~{::header}, content = ~{::content}, head = null, footer = ~{::footer}, sidebar = ~{::sidebar}, contentClass = ${theme.config.layout.content_header} and ${not #strings.isEmpty(post.spec.cover)} ? '!-mt-20' : '')}"
 >
-  <th:block th:fragment="hero">
+  <th:block th:fragment="header">
     <th:block
-      th:replace="~{modules/hero :: hero(isHome = false, cover = ${post.spec.cover}, title = ${post.spec.title})}"
+      th:replace="~{modules/header :: header(isHome = false, cover = ${post.spec.cover}, title = ${post.spec.title})}"
     />
   </th:block>
   <th:block th:fragment="footer">
@@ -28,52 +28,36 @@
     <th:block th:replace="~{modules/sidebar :: sidebar(prepend = ~{::sidebar_prepend})}"></th:block>
   </th:block>
   <th:block th:fragment="content">
-    <div x-data="postUpvote" class="rounded-xl bg-white p-4 dark:bg-slate-800">
-      <div th:attr="x-data=|{name:'${post.metadata.name}'}|" class="flex items-center justify-between">
+    <div class="rounded-xl bg-white p-4 dark:bg-slate-800">
+      <div class="flex items-center justify-between">
         <div class="inline-flex items-center justify-start gap-2">
-          <a th:href="@{${post.owner.permalink}}" th:title="${post.owner.displayName}">
-            <img
-              th:if="${not #strings.isEmpty(post.owner.avatar)}"
-              th:src="${post.owner.avatar}"
-              class="h-10 w-10 rounded-full"
-              th:alt="${post.owner.displayName}"
-            />
-          </a>
+          <img
+            th:if="${not #strings.isEmpty(post.owner.avatar)}"
+            th:src="${post.owner.avatar}"
+            class="h-10 w-10 rounded-full"
+            th:alt="${post.owner.displayName}"
+          />
           <div class="flex flex-col gap-0.5">
-            <a
-              th:href="@{${post.owner.permalink}}"
-              th:title="${post.owner.displayName}"
-              class="text-sm font-semibold text-gray-900 hover:text-gray-600 dark:text-slate-100 dark:hover:text-slate-200"
+            <span
+              class="text-sm font-semibold text-gray-900 dark:text-slate-100"
               th:text="${post.owner.displayName}"
-            ></a>
+            ></span>
             <div class="flex items-center gap-2 text-xs font-light text-gray-600 dark:text-slate-100">
-              <span th:text="|Posted on ${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}|"></span>
+              <span th:text="${'posted on'+#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"></span>
               <span class="text-gray-300 dark:text-slate-200">/</span>
-              <span th:text="|${post.stats?.visit ?:0} Read|"></span>
+              <span th:text="${post.stats.visit}+' Read'"></span>
               <span class="text-gray-300 dark:text-slate-200">/</span>
-              <span th:text="|${post.stats?.comment ?:0} Comment|"> </span>
+              <span th:text="${post.stats.comment}+ ' Comment'"> </span>
               <span class="text-gray-300 dark:text-slate-200">/</span>
-              <span th:attr="data-upvote-post-name=${post.metadata.name}" th:text="|${post.stats?.upvote ?:0} Like|">
-              </span>
+              <span th:text="${post.stats.upvote}+' Like'"> </span>
             </div>
           </div>
         </div>
         <div class="inline-flex flex-row gap-1">
-          <div
-            @click="handleUpvote(name)"
-            class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600"
-            :class="{'bg-gray-100 dark:bg-slate-600':upvoted(name)}"
-          >
-            <div
-              class="i-tabler-heart text-lg text-gray-600 hover:text-red-600"
-              :class="{'text-red-600 dark:text-red-400':upvoted(name)}"
-            ></div>
+          <div th:if="${false}" class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600">
+            <div class="i-tabler-heart text-lg text-gray-600 hover:text-red-600 dark:text-slate-100"></div>
           </div>
-          <a
-            th:if="${pluginFinder.available('PluginCommentWidget')} and ${post.spec.allowComment} and ${site.comment.enable}"
-            href="#comment"
-            class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600"
-          >
+          <a href="#comment" class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600">
             <div
               class="i-tabler-message-circle text-lg text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-50"
             ></div>
@@ -91,7 +75,7 @@
           th:each="tag : ${post.tags}"
           th:href="@{${tag.status.permalink}}"
           th:title="${tag.spec.displayName}"
-          th:text="|#${tag.spec.displayName}|"
+          th:text="'#'+${tag.spec.displayName}"
           class="cursor-pointer text-sm italic text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-500"
         >
         </a>
@@ -132,9 +116,7 @@
       </div>
       <hr class="my-10 dark:border-slate-700" />
       <!-- https://github.com/halo-sigs/plugin-comment-widget -->
-      <div
-        th:if="${pluginFinder.available('PluginCommentWidget')} and ${post.spec.allowComment} and ${site.comment.enable}"
-      >
+      <div th:if="${pluginFinder.available('PluginCommentWidget')}">
         <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50">Comment</h2>
         <halo:comment
           group="content.halo.run"
