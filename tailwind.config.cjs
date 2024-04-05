@@ -23,7 +23,6 @@ module.exports = {
   plugins: [
     require("@tailwindcss/aspect-ratio"),
     require("@tailwindcss/typography"),
-    require("@tailwindcss/line-clamp"),
     Icons(() => ({
       gg: {
         includeAll: true,
@@ -62,5 +61,9 @@ module.exports = {
     "i-simple-icons-steam",
     "i-simple-icons-github",
     "i-simple-icons-gitlab",
+    "i-simple-icons-rss",
+    "i-simple-icons-x",
+    "i-simple-icons-qzone",
+    "i-tabler-device-desktop"
   ],
 };

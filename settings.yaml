@@ -55,7 +55,7 @@ spec:
           id: header_background_image
           key: header_background_image
           label: 首页顶部背景图片
-          value: /themes/theme-earth/assets/images/default-background.png
+          value: /themes/theme-earth/assets/images/default-background-2023-10-12.jpeg
         - $formkit: radio
           name: content_header
           label: 文章页顶部
@@ -86,6 +86,54 @@ spec:
           label: 允许访客切换配色
           value: true
 
+    - group: post
+      label: 文章
+      formSchema:
+        - $formkit: select
+          name: content_style
+          label: 内容样式
+          value: "tailwind"
+          options:
+            - label: GitHub 风格
+              value: github
+            - label: Tailwind CSS Typography
+              value: tailwind
+        - $formkit: repeater
+          name: share_items
+          label: 分享按钮
+          value:
+            - id: wechat
+            - id: x
+            - id: telegram
+            - id: facebook
+            - id: qq
+            - id: qzone
+            - id: weibo
+            - id: douban
+            - id: native
+          children:
+            - $formkit: select
+              name: id
+              label: 分享平台
+              options:
+                - label: 微信
+                  value: wechat
+                - label: X
+                  value: x
+                - label: Telegram
+                  value: telegram
+                - label: Facebook
+                  value: facebook
+                - label: QQ
+                  value: qq
+                - label: QQ 空间
+                  value: qzone
+                - label: 微博
+                  value: weibo
+                - label: 豆瓣
+                  value: douban
+                - label: 系统分享
+                  value: native
     - group: sidebar
       label: 侧边栏
       formSchema:
@@ -166,6 +214,8 @@ spec:
                   value: i-simple-icons-github
                 - label: GitLab
                   value: i-simple-icons-gitlab
+                - label: RSS
+                  value: i-simple-icons-rss
             - $formkit: text
               name: name
               label: 名称
@@ -284,6 +334,8 @@ spec:
                   value: i-simple-icons-github
                 - label: GitLab
                   value: i-simple-icons-gitlab
+                - label: RSS
+                  value: i-simple-icons-rss
             - $formkit: text
               name: name
               label: 名称
@@ -312,3 +364,11 @@ spec:
           name: icp_link
           label: ICP备案跳转链接
           value: https://beian.miit.gov.cn/
+
+        - $formkit: text
+          name: gongan_text
+          label: 公安联网备案号
+        - $formkit: text
+          name: gongan_link
+          label: 公安联网备案跳转链接
+          value: https://beian.mps.gov.cn/#/query/webSearch

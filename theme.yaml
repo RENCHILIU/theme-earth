@@ -2,6 +2,10 @@ apiVersion: theme.halo.run/v1alpha1
 kind: Theme
 metadata:
   name: theme-earth
+  annotations:
+    # Add supports for Halo App Store
+    # https://halo.run/store/apps/app-KgWqR
+    "store.halo.run/app-id": "app-KgWqR"
 spec:
   displayName: Earth
   author:
@@ -13,5 +17,5 @@ spec:
   repo: https://github.com/halo-dev/theme-earth.git
   settingName: "theme-earth-setting"
   configMapName: "theme-earth-configMap"
-  version: 1.1.1
-  require: 2.0.0
+  version: 1.7.1
+  require: ">=2.8.0"

@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{modules/layout :: html(title = ${singlePage.spec.title} + ' - ' + ${site.title}, hero = ~{::hero}, content = ~{::content}, head = null, footer = ~{::footer}, sidebar = null, contentClass = ${theme.config.layout.content_header} and ${not #strings.isEmpty(singlePage.spec.cover)} ? '!-mt-20' : '')}"
+  th:replace="~{modules/layout :: html(title = ${singlePage.spec.title} + ' - ' + ${site.title}, hero = ~{::hero}, content = ~{::content}, head = ~{::head}, footer = ~{::footer}, sidebar = null, contentClass = ${theme.config.layout.content_header} and ${not #strings.isEmpty(singlePage.spec.cover)} ? '!-mt-20' : '')}"
 >
+  <th:block th:fragment="head">
+    <link rel="stylesheet" th:href="@{/assets/styles/github-markdown.css?v={version}(version=${theme.spec.version})}" />
+  </th:block>
   <th:block th:fragment="hero">
     <th:block
       th:replace="~{modules/hero :: hero(isHome = false, cover = ${singlePage.spec.cover}, title = ${singlePage.spec.title})}"
@@ -28,28 +31,29 @@
               th:title="${singlePage.owner.displayName}"
             ></a>
             <div class="flex items-center gap-2 text-xs font-light text-gray-600 dark:text-slate-100">
-              <span th:text="|Posted ${#dates.format(singlePage.spec.publishTime,'yyyy-MM-dd')}|"></span>
+              <span th:text="|发布于 ${#dates.format(singlePage.spec.publishTime,'yyyy-MM-dd')}|"></span>
               <span class="text-gray-300 dark:text-slate-200">/</span>
-              <span th:text="|${singlePage.stats?.visit ?:0} Read|"></span>
-              <span class="text-gray-300 dark:text-slate-200">/</span>
-              <span th:text="|${singlePage.stats?.comment ?:0} Comment|"> </span>
-              <span class="text-gray-300 dark:text-slate-200">/</span>
-              <span th:text="|${singlePage.stats?.upvote ?:0} Like|"> </span>
+              <span th:text="|${singlePage.stats?.visit ?:0} read|"></span>
             </div>
           </div>
         </div>
         <div class="inline-flex flex-row gap-1">
-          <div th:if="${false}" class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600">
-            <div class="i-tabler-heart text-lg text-gray-600 hover:text-red-600 dark:text-slate-100"></div>
-          </div>
           <a
-            th:if="${pluginFinder.available('PluginCommentWidget')} and ${post.spec.allowComment} and ${site.comment.enable}"
+            th:if="${haloCommentEnabled}"
             href="#comment"
-            class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600"
+            class="group inline-flex cursor-pointer items-center gap-0.5 rounded-lg"
           >
             <div
-              class="i-tabler-message-circle text-lg text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-50"
-            ></div>
+              class="inline-flex items-center justify-center rounded-full p-2 transition-all group-hover:bg-gray-100 dark:group-hover:bg-slate-700"
+            >
+              <div
+                class="i-tabler-message-circle text-lg text-gray-600 group-hover:text-indigo-500 dark:text-slate-500"
+              ></div>
+            </div>
+            <span
+              class="text-sm text-gray-600 group-hover:text-indigo-500 dark:text-slate-500"
+              th:text="${singlePage.stats?.comment ?:0}"
+            ></span>
           </a>
           <div th:if="${false}" class="cursor-pointer rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-slate-600">
             <div
@@ -60,15 +64,13 @@
       </div>
       <h1 class="my-3 text-2xl font-medium dark:text-slate-50" th:text="${singlePage.spec.title}"></h1>
       <article
-        class="prose prose-base mt-4 !max-w-none dark:prose-invert"
+        class="!max-w-none break-words"
+        th:classappend="${theme.config.post.content_style == 'github' ? 'markdown-body' : 'tailwind-typography'}"
         th:utext="${singlePage.content.content}"
       ></article>
-      <hr class="my-10 dark:border-slate-700" />
-      <!-- https://github.com/halo-sigs/plugin-comment-widget -->
-      <div
-        th:if="${pluginFinder.available('PluginCommentWidget')} and ${singlePage.spec.allowComment} and ${site.comment.enable}"
-      >
-        <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50">Comment</h2>
+      <hr th:if="${haloCommentEnabled}" class="my-10 dark:border-slate-700" />
+      <div id="comment" th:if="${haloCommentEnabled}">
+        <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50">comment</h2>
         <halo:comment
           group="content.halo.run"
           kind="SinglePage"
@@ -80,7 +82,7 @@
 
     <a
       sec:authorize="isAuthenticated()"
-      th:href="'/console#/pages/single/editor?name='+${singlePage.metadata.name}+'&returnToView=true'"
+      th:href="|/console/single-pages/editor?name=${singlePage.metadata.name}&returnToView=true|"
       id="edit-button"
       class="fixed bottom-10 right-10 flex h-14 w-14 items-center justify-center rounded-full bg-[#4CCBA0] text-white shadow transition-all duration-300 hover:opacity-80 hover:shadow-lg"
     >
